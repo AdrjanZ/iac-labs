@@ -22,18 +22,26 @@ jobs:
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+    
+    - name: Change to example-app directory
+      run: cd example-app
         
     - name: Install Dependencies
+      working-directory: ./example-app
       run: poetry install --no-root
       
     - name: Run Static Code Analysis (Lint)
+      working-directory: ./example-app
       run: poetry run task lint
       
     - name: Run Security Tests
+      working-directory: ./example-app
       run: poetry run task security
       
     - name: Run Unit Tests
+      working-directory: ./example-app
       run: poetry run task test
       
     - name: Run Code Formatter
+      working-directory: ./example-app
       run: poetry run task formatter
