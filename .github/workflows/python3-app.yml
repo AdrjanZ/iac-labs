@@ -23,11 +23,18 @@ jobs:
         with:
           python-version: '3.11'
           
-      - name: Install Poetry
+      - name: Install Poetry (Linux)
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Poetry (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           
       - name: Cache build venv
         id: cached-poetry-dependencies
@@ -38,7 +45,6 @@ jobs:
           
       - name: Install Dependencies
         working-directory: ./example-app
-        shell: bash
         run: poetry install --no-root
 
   static_tests:
@@ -56,11 +62,18 @@ jobs:
         with:
           python-version: '3.11'
           
-      - name: Install Poetry
+      - name: Install Poetry (Linux)
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Poetry (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           
       - name: Cache build venv
         id: cached-poetry-dependencies
@@ -72,12 +85,10 @@ jobs:
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         working-directory: ./example-app
-        shell: bash
         run: poetry install --no-root
         
       - name: Run ${{ matrix.test_type }}
         working-directory: ./example-app
-        shell: bash
         run: poetry run task ${{ matrix.test_type }}
 
   unit_tests:
@@ -94,11 +105,18 @@ jobs:
         with:
           python-version: '3.11'
           
-      - name: Install Poetry
+      - name: Install Poetry (Linux)
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Poetry (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           
       - name: Cache build venv
         id: cached-poetry-dependencies
@@ -110,10 +128,8 @@ jobs:
       - name: Install Dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         working-directory: ./example-app
-        shell: bash
         run: poetry install --no-root
         
       - name: Run Unit Tests
         working-directory: ./example-app
-        shell: bash
         run: poetry run task test
